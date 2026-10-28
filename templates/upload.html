@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analyse Food – CalorieAI</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+</head>
+<body class="dark-theme">
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg glass-nav sticky-top">
+  <div class="container">
+    <a class="navbar-brand logo-text" href="/"><span class="logo-icon">🍽️</span> CalorieAI</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <i class="fas fa-bars text-white"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto gap-2">
+        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link active" href="/upload">Analyse Food</a></li>
+        <li class="nav-item"><a class="nav-link" href="/history">History</a></li>
+        <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
+      </ul>
+      <button class="btn btn-sm btn-outline-light ms-3 theme-btn" onclick="toggleTheme()">
+        <i class="fas fa-moon"></i>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header text-center">
+  <div class="container">
+    <h1 class="page-title">Analyse Your <span class="gradient-text">Food</span></h1>
+    <p class="page-sub">Upload a food image and get instant AI-powered nutritional analysis</p>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row g-4 justify-content-center">
+
+    <!-- UPLOAD CARD -->
+    <div class="col-lg-5">
+      <div class="glass-card upload-card">
+        <h4 class="card-heading mb-4"><i class="fas fa-cloud-upload-alt me-2 text-accent"></i>Upload Food Image</h4>
+
+        <!-- Drop Zone -->
+        <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+          <div class="drop-zone-inner" id="dropContent">
+            <div class="drop-icon">📸</div>
+            <p class="drop-text">Drag & drop your food image here</p>
+            <p class="drop-hint">or click to browse · JPG, PNG, WEBP</p>
+          </div>
+          <!-- Image preview (hidden initially) -->
+          <div id="previewWrapper" class="preview-wrapper d-none">
+            <img id="previewImg" src="" alt="Preview" class="preview-img"/>
+            <button class="btn btn-sm btn-danger remove-img" onclick="removeImage(event)">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Hidden file input -->
+        <input type="file" id="fileInput" accept="image/*" class="d-none" onchange="handleFileSelect(this)"/>
+
+        <!-- Webcam button -->
+        <div class="text-center my-3">
+          <span class="text-muted small">— or —</span>
+        </div>
+        <button class="btn btn-outline-accent w-100 mb-3" onclick="startWebcam()">
+          <i class="fas fa-video me-2"></i>Use Webcam
+        </button>
+        <!-- Webcam container (hidden) -->
+        <div id="webcamContainer" class="d-none">
+          <video id="webcamVideo" class="w-100 rounded-3 mb-2" autoplay playsinline></video>
+          <button class="btn btn-primary w-100" onclick="captureWebcam()">
+            <i class="fas fa-camera me-2"></i>Capture Photo
+          </button>
+        </div>
+
+        <!-- Analyse button -->
+        <button id="analyseBtn" class="btn btn-primary w-100 btn-analyse mt-2" onclick="analyseFood()" disabled>
+          <i class="fas fa-search me-2"></i>Analyse Nutrition
+        </button>
+
+        <!-- Loader -->
+        <div id="loader" class="loader-container d-none">
+          <div class="ai-loader">
+            <div class="loader-ring"></div>
+            <div class="loader-ring"></div>
+            <div class="loader-ring"></div>
+          </div>
+          <p class="loader-text">AI is analysing your food…</p>
+        </div>
+
+        <!-- Error message -->
+        <div id="errorMsg" class="alert alert-danger d-none mt-3"></div>
+      </div>
+    </div>
+
+    <!-- RESULTS CARD -->
+    <div class="col-lg-7" id="resultsCol">
+      <!-- Empty state -->
+      <div class="glass-card results-placeholder text-center" id="emptyState">
+        <div class="empty-icon">🔍</div>
+        <h5>Results Appear Here</h5>
+        <p class="text-muted">Upload a food image and click "Analyse Nutrition" to see detailed results.</p>
+      </div>
+
+      <!-- Results (hidden until prediction) -->
+      <div id="resultCard" class="d-none">
+
+        <!-- Food name & confidence -->
+        <div class="glass-card result-header-card mb-3">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div>
+              <p class="result-label">Detected Food</p>
+              <h2 class="result-food-name" id="rFoodName">—</h2>
+              <span class="health-badge" id="rHealthLabel">—</span>
+            </div>
+            <div class="text-center">
+              <div class="confidence-ring-wrap">
+                <svg class="confidence-svg" viewBox="0 0 100 100">
+                  <circle class="conf-bg" cx="50" cy="50" r="40"/>
+                  <circle class="conf-fill" id="confCircle" cx="50" cy="50" r="40"
+                          stroke-dasharray="0 251.2"/>
+                </svg>
+                <div class="confidence-text">
+                  <span id="rConfidence">0</span><small>%</small>
+                  <div class="conf-label">Confidence</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nutrition table -->
+        <div class="glass-card mb-3">
+          <h5 class="card-heading mb-3"><i class="fas fa-chart-bar me-2 text-accent"></i>Nutrition Facts</h5>
+          <div class="nutrition-grid">
+            <div class="nutrition-item calories">
+              <div class="nut-icon">🔥</div>
+              <div class="nut-value" id="rCalories">—</div>
+              <div class="nut-label">Calories (kcal)</div>
+            </div>
+            <div class="nutrition-item protein">
+              <div class="nut-icon">💪</div>
+              <div class="nut-value" id="rProtein">—</div>
+              <div class="nut-label">Protein (g)</div>
+            </div>
+            <div class="nutrition-item carbs">
+              <div class="nut-icon">🌾</div>
+              <div class="nut-value" id="rCarbs">—</div>
+              <div class="nut-label">Carbs (g)</div>
+            </div>
+            <div class="nutrition-item fat">
+              <div class="nut-icon">🧈</div>
+              <div class="nut-value" id="rFat">—</div>
+              <div class="nut-label">Fat (g)</div>
+            </div>
+          </div>
+
+          <!-- Macro bars -->
+          <div class="macro-bars mt-3">
+            <div class="macro-row">
+              <span class="macro-name">Protein</span>
+              <div class="macro-bar-bg"><div class="macro-bar-fill protein-bar" id="proteinBar"></div></div>
+              <span class="macro-pct" id="proteinPct"></span>
+            </div>
+            <div class="macro-row">
+              <span class="macro-name">Carbs</span>
+              <div class="macro-bar-bg"><div class="macro-bar-fill carbs-bar" id="carbsBar"></div></div>
+              <span class="macro-pct" id="carbsPct"></span>
+            </div>
+            <div class="macro-row">
+              <span class="macro-name">Fat</span>
+              <div class="macro-bar-bg"><div class="macro-bar-fill fat-bar" id="fatBar"></div></div>
+              <span class="macro-pct" id="fatPct"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Health tip -->
+        <div class="glass-card health-tip-card mb-3">
+          <h5 class="card-heading mb-2"><i class="fas fa-heartbeat me-2 text-accent"></i>Health Recommendation</h5>
+          <p id="rHealthTip" class="health-tip-text">—</p>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="d-flex gap-2 flex-wrap">
+          <button class="btn btn-outline-accent flex-fill" onclick="downloadPDF()">
+            <i class="fas fa-file-pdf me-2"></i>Download PDF
+          </button>
+          <button class="btn btn-outline-accent flex-fill" onclick="speakResult()">
+            <i class="fas fa-volume-up me-2"></i>Read Aloud
+          </button>
+          <button class="btn btn-outline-light flex-fill" onclick="resetForm()">
+            <i class="fas fa-redo me-2"></i>New Analysis
+          </button>
+        </div>
+
+      </div><!-- /#resultCard -->
+    </div><!-- /.col -->
+  </div><!-- /.row -->
+
+  <!-- BMI CALCULATOR -->
+  <div class="row mt-5">
+    <div class="col-12">
+      <div class="glass-card">
+        <h4 class="card-heading mb-4"><i class="fas fa-weight me-2 text-accent"></i>BMI Calculator</h4>
+        <div class="row g-3 align-items-end">
+          <div class="col-md-3">
+            <label class="form-label">Height (cm)</label>
+            <input type="number" id="bmiHeight" class="form-control glass-input" placeholder="e.g. 170"/>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Weight (kg)</label>
+            <input type="number" id="bmiWeight" class="form-control glass-input" placeholder="e.g. 65"/>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Age</label>
+            <input type="number" id="bmiAge" class="form-control glass-input" placeholder="e.g. 22"/>
+          </div>
+          <div class="col-md-3">
+            <button class="btn btn-primary w-100" onclick="calculateBMI()">Calculate BMI</button>
+          </div>
+        </div>
+        <div id="bmiResult" class="bmi-result mt-3 d-none"></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /.container -->
+
+<footer class="site-footer">
+  <div class="container text-center">
+    <p class="mb-1"><span class="logo-text">🍽️ CalorieAI</span></p>
+    <p class="footer-sub">Final Year Mini Project · AI-Based Food Calorie Estimator</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/main.js"></script>
+<script src="/static/js/upload.js"></script>
+</body>
+</html>

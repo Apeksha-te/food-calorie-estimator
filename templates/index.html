@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Food Calorie Estimator</title>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <!-- Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+</head>
+<body class="dark-theme">
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar navbar-expand-lg glass-nav sticky-top">
+  <div class="container">
+    <a class="navbar-brand logo-text" href="/">
+      <span class="logo-icon">🍽️</span> CalorieAI
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <i class="fas fa-bars text-white"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto gap-2">
+        <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="/upload">Analyse Food</a></li>
+        <li class="nav-item"><a class="nav-link" href="/history">History</a></li>
+        <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
+      </ul>
+      <button id="themeToggle" class="btn btn-sm btn-outline-light ms-3 theme-btn" onclick="toggleTheme()">
+        <i class="fas fa-moon"></i>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== HERO SECTION ===== -->
+<section class="hero-section">
+  <div class="hero-bg-particles" id="particles"></div>
+  <div class="container text-center hero-content">
+    <div class="hero-badge animate-fade-in">🤖 AI-Powered Nutrition Analysis</div>
+    <h1 class="hero-title animate-slide-up">
+      Know What You <span class="gradient-text">Eat</span><br/>Instantly
+    </h1>
+    <p class="hero-subtitle animate-slide-up delay-1">
+      Upload any food photo and our CNN model will identify the dish,<br/>
+      estimate calories, and give personalised health recommendations — in seconds.
+    </p>
+    <div class="hero-actions animate-slide-up delay-2">
+      <a href="/upload" class="btn btn-primary btn-hero me-3">
+        <i class="fas fa-camera me-2"></i>Analyse Food Now
+      </a>
+      <a href="/about" class="btn btn-outline-light btn-hero">
+        <i class="fas fa-info-circle me-2"></i>Learn More
+      </a>
+    </div>
+    <!-- Stats strip -->
+    <div class="stats-strip animate-fade-in delay-3">
+      <div class="stat-item"><span class="stat-number">10+</span><span class="stat-label">Food Classes</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat-item"><span class="stat-number">95%</span><span class="stat-label">Accuracy</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat-item"><span class="stat-number">CNN</span><span class="stat-label">Deep Learning</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat-item"><span class="stat-number">Real-time</span><span class="stat-label">Prediction</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== HOW IT WORKS ===== -->
+<section class="section-pad">
+  <div class="container">
+    <h2 class="section-title text-center">How It <span class="gradient-text">Works</span></h2>
+    <p class="section-sub text-center">Three simple steps to know your food's nutrition</p>
+    <div class="row g-4 mt-3">
+      <div class="col-md-4">
+        <div class="glass-card step-card text-center">
+          <div class="step-icon">📷</div>
+          <div class="step-num">01</div>
+          <h4>Upload Image</h4>
+          <p>Take a photo of your meal or upload from your gallery. Supports JPG, PNG, WEBP formats.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="glass-card step-card text-center">
+          <div class="step-icon">🧠</div>
+          <div class="step-num">02</div>
+          <h4>AI Analyses</h4>
+          <p>Our CNN model powered by MobileNetV2 processes the image and identifies the food item instantly.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="glass-card step-card text-center">
+          <div class="step-icon">📊</div>
+          <div class="step-num">03</div>
+          <h4>Get Results</h4>
+          <p>Receive detailed nutrition data including calories, protein, carbs, fat and personalised health tips.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SUPPORTED FOODS ===== -->
+<section class="section-pad bg-alt">
+  <div class="container">
+    <h2 class="section-title text-center">Supported <span class="gradient-text">Foods</span></h2>
+    <p class="section-sub text-center">Our model is trained on these 10 categories including Indian cuisine</p>
+    <div class="food-grid mt-4">
+      <div class="food-chip"><span>🍕</span> Pizza</div>
+      <div class="food-chip"><span>🍔</span> Burger</div>
+      <div class="food-chip"><span>🫓</span> Dosa</div>
+      <div class="food-chip"><span>🍛</span> Biryani</div>
+      <div class="food-chip"><span>⚪</span> Idli</div>
+      <div class="food-chip"><span>🍝</span> Pasta</div>
+      <div class="food-chip"><span>🍎</span> Apple</div>
+      <div class="food-chip"><span>🍌</span> Banana</div>
+      <div class="food-chip"><span>🔺</span> Samosa</div>
+      <div class="food-chip"><span>🥪</span> Sandwich</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURES ===== -->
+<section class="section-pad">
+  <div class="container">
+    <h2 class="section-title text-center">Project <span class="gradient-text">Features</span></h2>
+    <div class="row g-4 mt-3">
+      <div class="col-md-6 col-lg-4">
+        <div class="feature-card glass-card">
+          <i class="fas fa-brain feature-icon"></i>
+          <h5>Deep Learning CNN</h5>
+          <p>MobileNetV2 transfer learning model trained on Food-101 dataset with data augmentation.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="feature-card glass-card">
+          <i class="fas fa-chart-pie feature-icon"></i>
+          <h5>Nutrition Breakdown</h5>
+          <p>Detailed macronutrient analysis: calories, protein, carbohydrates and fat per serving.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="feature-card glass-card">
+          <i class="fas fa-history feature-icon"></i>
+          <h5>Prediction History</h5>
+          <p>All predictions saved in SQLite database with timestamps for tracking daily intake.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="feature-card glass-card">
+          <i class="fas fa-heartbeat feature-icon"></i>
+          <h5>Health Suggestions</h5>
+          <p>Personalised dietary advice and health labels based on your food choice.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="feature-card glass-card">
+          <i class="fas fa-file-pdf feature-icon"></i>
+          <h5>PDF Reports</h5>
+          <p>Download your prediction results as a formatted PDF report for records.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="feature-card glass-card">
+          <i class="fas fa-mobile-alt feature-icon"></i>
+          <h5>Mobile Responsive</h5>
+          <p>Fully responsive design works perfectly on phones, tablets and desktops.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="cta-section text-center">
+  <div class="container">
+    <h2 class="cta-title">Ready to Analyse Your <span class="gradient-text">Meal?</span></h2>
+    <p class="cta-sub">Upload an image and get instant nutritional insights powered by AI</p>
+    <a href="/upload" class="btn btn-primary btn-hero mt-3">
+      <i class="fas fa-upload me-2"></i>Upload Food Image
+    </a>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="site-footer">
+  <div class="container text-center">
+    <p class="mb-1"><span class="logo-text">🍽️ CalorieAI</span></p>
+    <p class="footer-sub">Final Year Mini Project · AI-Based Food Calorie Estimator Using Image Processing & ML</p>
+    <p class="footer-sub">Built with Flask · TensorFlow · OpenCV · Bootstrap</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/main.js"></script>
+</body>
+</html>

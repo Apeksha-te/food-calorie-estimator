@@ -1,0 +1,61 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+venv*/
+.venv/
+ENV/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# Flask
+instance/
+.webassets-cache
+flask_session/
+
+# Database
+*.db
+*.sqlite3
+
+# ML Model (large binary - use Git LFS or share separately)
+model/*.h5
+model/*.pkl
+model/training_history.png
+model/confusion_matrix.png
+
+# Uploaded images (user data)
+static/uploads/*
+!static/uploads/.gitkeep
+
+# Dataset (too large for git)
+dataset/
+dataset_temp/
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Environment variables
+.env
+.env.local
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
